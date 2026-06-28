@@ -1,0 +1,59 @@
+.root {
+    -color-flame-start: #FF4E1F;
+    -color-flame-end: #B0090C;
+    -color-card-bg: #FFF7F4;
+    -color-border: #FF4E1F;
+}
+
+.app-background {
+    -fx-background-color: linear-gradient(
+            to bottom right,
+            #FF4E1F 0%,
+            #E0210F 50%,
+            #B0090C 100%
+    );
+}
+
+.element {
+    -fx-background-color: #FFF7F4;
+    -fx-background-radius: 20px;
+    -fx-padding: 24px 32px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(176, 9, 12, 0.0), 0, 0.0, 0, 0);
+    -fx-transition: -fx-effect 0.15s ease-in-out;
+}
+
+.element:hover {
+    -fx-effect: dropshadow(gaussian, rgba(176, 9, 12, 0.45), 18, 0.25, 0, 6);
+}
+
+.element:pressed {
+    -fx-background-color: #FBEAE4;
+    -fx-effect: dropshadow(gaussian, rgba(176, 9, 12, 0.3), 8, 0.2, 0, 2);
+}
+
+.element-bordered {
+    -fx-background-color: #FFF7F4;
+    -fx-background-radius: 20px;
+    -fx-border-color: #FF4E1F;
+    -fx-border-width: 2px;
+    -fx-border-radius: 20px;
+    -fx-padding: 22px 30px; /* -2px to offset border-width, keeps outer size == .element */
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(176, 9, 12, 0.0), 0, 0.0, 0, 0);
+    -fx-transition: -fx-effect 0.15s ease-in-out;
+}
+
+.element-bordered:hover {
+    -fx-effect: dropshadow(gaussian, rgba(176, 9, 12, 0.45), 18, 0.25, 0, 6);
+}
+
+.element-bordered:pressed {
+    -fx-background-color: #FBEAE4;
+    -fx-effect: dropshadow(gaussian, rgba(176, 9, 12, 0.3), 8, 0.2, 0, 2);
+}
+
+.panel-background {
+    -fx-background-color: #FFF7F4;
+    -fx-background-radius: 24px;
+}
