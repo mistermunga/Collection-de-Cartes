@@ -6,22 +6,29 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 
 public class DatabaseManager {
 
     private static final String dbDirectory = "databases";
-    List<String> languages;
+    private final List<String> languages;
+    private final Map<String, Connection> connections = new HashMap<>();
 
-    public DatabaseManager() throws IOException {
+    public DatabaseManager() throws IOException, SQLException {
 
         languages = Arrays.stream(DeckLanguage.values())
-                .map(Objects::toString)
+                .map(DeckLanguage::name)
                 .toList();
 
         initializeDatabases();
+        openConnections();
     }
 
     private void initializeDatabases() throws IOException {
@@ -35,5 +42,51 @@ public class DatabaseManager {
                 Files.createFile(dbPath);
             }
         }
+    }
+
+    private void openConnections() throws SQLException {
+        for (String language : languages) {
+            String url = "jdbc:sqlite:" + dbDirectory + "/" + language.toLowerCase() + ".db";
+            Connection connection = DriverManager.getConnection(url);
+            connection.setAutoCommit(true);
+            connections.put(language, connection);
+            initializeSchema(connection);
+        }
+    }
+
+    private void initializeSchema(Connection connection) throws SQLException {
+        String createWords = """
+                CREATE TABLE IF NOT EXISTS words (
+                    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+                    lemma           TEXT NOT NULL UNIQUE,
+                    definition      TEXT NOT NULL,
+                    part_of_speech  TEXT NOT NULL,
+                    gender          TEXT NOT NULL,
+                    mastery_level   INTEGER NOT NULL DEFAULT 0,
+                    created_at      TEXT NOT NULL DEFAULT (datetime('now'))
+                );
+                """;
+
+        try(Statement statement = connection.createStatement()) {
+            statement.execute(createWords);
+        }
+    }
+
+    public Connection getConnection(DeckLanguage language) {
+        return connections.get(language.name());
+    }
+
+    public List<String> getLanguages() {
+        return languages;
+    }
+
+    public void closeAllConnections() {
+        connections.forEach((language, connection) -> {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                System.err.println("Failed to close connection: " + language + "\n" + e.getMessage());
+            }
+        });
     }
 }
