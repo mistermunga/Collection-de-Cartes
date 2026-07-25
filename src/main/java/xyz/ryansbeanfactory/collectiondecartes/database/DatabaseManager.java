@@ -67,8 +67,19 @@ public class DatabaseManager {
                 );
                 """;
 
+        String createPhrases = """
+                CREATE TABLE IF NOT EXISTS phrases (
+                    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+                    lemma           TEXT NOT NULL UNIQUE,
+                    definition      TEXT NOT NULL,
+                    mastery_level   INTEGER NOT NULL DEFAULT 0,
+                    created_at      TEXT NOT NULL DEFAULT (datetime('now'))
+                );
+                """;
+
         try(Statement statement = connection.createStatement()) {
             statement.execute(createWords);
+            statement.execute(createPhrases);
         }
     }
 
