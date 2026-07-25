@@ -5,13 +5,14 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import xyz.ryansbeanfactory.collectiondecartes.database.DatabaseManager;
 
-import java.util.List;
 import java.util.Objects;
 
 public class CarteApplication extends Application {
 
     private static CarteApplication instance;
+
     private Stage primaryStage;
+    private DatabaseManager databaseManager;
 
     static {
         System.setProperty("file.encoding", "UTF-8");
@@ -25,10 +26,11 @@ public class CarteApplication extends Application {
     public void start(Stage primaryStage) throws Exception {
         instance = this;
         this.primaryStage = primaryStage;
-        List<String> databases = initializeDatabases();
+
+        initializeDatabase();
         setUpFonts();
 
-        SceneManager.getInstance().showLanding(databases);
+        SceneManager.getInstance().showLanding(databaseManager.getLanguages());
     }
 
     private void setUpFonts() {
@@ -49,14 +51,17 @@ public class CarteApplication extends Application {
         }
     }
 
-    private List<String> initializeDatabases() throws Exception {
+    private void initializeDatabase() throws Exception {
         try {
-            DatabaseManager databaseManager = new DatabaseManager();
-            return databaseManager.getLanguages();
+            databaseManager = new DatabaseManager();
         } catch (Exception e) {
-            System.err.println("Database initialization failed \n" + e.getMessage());
-            throw new Exception();
+            System.err.println("Database initialization failed\n" + e.getMessage());
+            throw new Exception(e);
         }
+    }
+
+    public DatabaseManager getDatabaseManager() {
+        return databaseManager;
     }
 
     public Stage getPrimaryStage() {
