@@ -2,7 +2,13 @@ package xyz.ryansbeanfactory.collectiondecartes;
 
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import xyz.ryansbeanfactory.collectiondecartes.session.AppSession;
+import xyz.ryansbeanfactory.collectiondecartes.session.DeckLanguage;
+import xyz.ryansbeanfactory.collectiondecartes.theme.ThemeManager;
 import xyz.ryansbeanfactory.collectiondecartes.ui.LandingPage;
+import xyz.ryansbeanfactory.collectiondecartes.ui.crossroads.CrossRoads;
+
+import java.util.List;
 
 public class SceneManager {
 
@@ -14,14 +20,14 @@ public class SceneManager {
     }
 
     public static SceneManager getInstance() {
-        return instance == null ?
+        return instance = instance == null ?
                 new SceneManager() :
                 instance;
     }
 
-    public void showLanding() {
+    public void showLanding(List<String> languages) {
         Stage stage = application.getPrimaryStage();
-        LandingPage landing = new LandingPage();
+        LandingPage landing = new LandingPage(languages);
         Scene scene = new Scene(landing);
 
         stage.setMaximized(true);
