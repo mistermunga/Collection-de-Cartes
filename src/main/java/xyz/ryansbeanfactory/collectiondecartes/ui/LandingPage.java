@@ -18,11 +18,12 @@ public class LandingPage extends VBox {
         this.languages = languages;
 
         ThemeManager.getInstance().registerComponent(this);
-        this.getStyleClass().add("app-background");
+        this.getStyleClass().addAll("root", "landing-root");
 
         this.setAlignment(Pos.CENTER);
         this.setSpacing(40);
         this.setPadding(new Insets(60, 40, 60, 40));
+        this.setFillWidth(false);
 
         showLanguageOptions();
 
@@ -30,6 +31,10 @@ public class LandingPage extends VBox {
 
     private void showLanguageOptions() {
         HBox container = new HBox();
+        container.getStyleClass().addAll("container", "island");
+        container.setAlignment(Pos.CENTER);
+        container.setSpacing(20);
+        container.setPadding(new Insets(30, 30, 30, 30));
         for (String language : languages) {
             LargeButton button = new LargeButton(
                     language,
@@ -37,7 +42,7 @@ public class LandingPage extends VBox {
             );
             container.getChildren().add(button);
         }
-        container.setAlignment(Pos.CENTER);
+
         this.getChildren().add(container);
     }
 
