@@ -1,10 +1,12 @@
 package xyz.ryansbeanfactory.collectiondecartes;
 
 import javafx.application.Application;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import xyz.ryansbeanfactory.collectiondecartes.database.DatabaseManager;
 
 import java.util.List;
+import java.util.Objects;
 
 public class CarteApplication extends Application {
 
@@ -24,8 +26,27 @@ public class CarteApplication extends Application {
         instance = this;
         this.primaryStage = primaryStage;
         List<String> databases = initializeDatabases();
+        setUpFonts();
 
         SceneManager.getInstance().showLanding(databases);
+    }
+
+    private void setUpFonts() {
+        final String[] fonts = {
+                "Manrope-Regular.ttf",
+                "Manrope-Medium.ttf",
+                "Manrope-SemiBold.ttf",
+                "Manrope-Bold.ttf"
+        };
+
+        for (String fontName : fonts) {
+            String path = "/xyz/ryansbeanfactory/collectiondecartes/fonts/" + fontName;
+            Font _ = Font.loadFont(
+                    Objects.requireNonNull(
+                            getClass().getResourceAsStream(path)
+                    ), 14
+            );
+        }
     }
 
     private List<String> initializeDatabases() throws Exception {
