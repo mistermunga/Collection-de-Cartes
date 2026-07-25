@@ -15,8 +15,9 @@ public class ThemeManager {
     // every theme subfolder must contain exactly these files
     private static final List<String> STYLESHEET_NAMES = List.of(
             "base.css",
-            "nav-page.css",
-            "main-mode.css"
+            "layout.css",
+            "components.css",
+            "flashcards.css"
     );
 
     private static ThemeManager instance;
