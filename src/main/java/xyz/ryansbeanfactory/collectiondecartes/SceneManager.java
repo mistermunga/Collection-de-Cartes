@@ -30,4 +30,19 @@ public class SceneManager {
         stage.setScene(scene);
         stage.show();
     }
+
+    public void showCrossRoads(String language) {
+        ThemeManager.getInstance().unregisterAllComponents();
+        AppSession.getInstance().setDeckLanguage(DeckLanguage.valueOf(language.toUpperCase()));
+
+        Stage stage = application.getPrimaryStage();
+        CrossRoads crossRoads = new CrossRoads();
+        Scene scene = new Scene(crossRoads);
+
+        stage.setMaximized(true);
+        stage.setResizable(false);
+
+        stage.setScene(scene);
+        stage.show();
+    }
 }
