@@ -1,6 +1,7 @@
 package xyz.ryansbeanfactory.collectiondecartes;
 
 import javafx.scene.Scene;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 import xyz.ryansbeanfactory.collectiondecartes.session.AppSession;
 import xyz.ryansbeanfactory.collectiondecartes.session.DeckLanguage;
@@ -19,6 +20,17 @@ public class SceneManager {
         application = CarteApplication.getInstance();
     }
 
+    private void configureStage(Stage stage) {
+        var bounds = Screen.getPrimary().getVisualBounds();
+
+        stage.setX(bounds.getMinX());
+        stage.setY(bounds.getMinY());
+        stage.setWidth(bounds.getWidth());
+        stage.setHeight(bounds.getHeight());
+
+        stage.setResizable(false);
+    }
+
     public static SceneManager getInstance() {
         return instance = instance == null ?
                 new SceneManager() :
@@ -27,11 +39,9 @@ public class SceneManager {
 
     public void showLanding(List<String> languages) {
         Stage stage = application.getPrimaryStage();
+        configureStage(stage);
         LandingPage landing = new LandingPage(languages);
         Scene scene = new Scene(landing);
-
-        stage.setMaximized(true);
-        stage.setResizable(false);
 
         stage.setScene(scene);
         stage.show();
@@ -44,9 +54,6 @@ public class SceneManager {
         Stage stage = application.getPrimaryStage();
         CrossRoads crossRoads = new CrossRoads();
         Scene scene = new Scene(crossRoads);
-
-        stage.setMaximized(true);
-        stage.setResizable(false);
 
         stage.setScene(scene);
         stage.show();
