@@ -24,7 +24,6 @@ public class LargeButton extends Button {
     }
 
     private void initialize() {
-        ThemeManager.getInstance().registerComponent(this);
         this.getStyleClass().add("element");
     }
 }

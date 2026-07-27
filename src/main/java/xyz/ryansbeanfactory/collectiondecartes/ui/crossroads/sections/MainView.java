@@ -4,7 +4,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.SplitPane;
-import xyz.ryansbeanfactory.collectiondecartes.theme.ThemeManager;
 import xyz.ryansbeanfactory.collectiondecartes.ui.crossroads.util.NavOption;
 
 public class MainView extends SplitPane {

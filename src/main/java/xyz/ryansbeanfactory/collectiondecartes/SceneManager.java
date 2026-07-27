@@ -40,7 +40,9 @@ public class SceneManager {
     public void showLanding(List<String> languages) {
         Stage stage = application.getPrimaryStage();
         configureStage(stage);
+
         LandingPage landing = new LandingPage(languages);
+        ThemeManager.getInstance().registerComponent(landing);
         Scene scene = new Scene(landing);
 
         stage.setScene(scene);
@@ -53,6 +55,7 @@ public class SceneManager {
 
         Stage stage = application.getPrimaryStage();
         CrossRoads crossRoads = new CrossRoads();
+        ThemeManager.getInstance().registerComponent(crossRoads);
         Scene scene = new Scene(crossRoads);
 
         stage.setScene(scene);

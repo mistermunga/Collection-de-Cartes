@@ -16,8 +16,6 @@ public class LandingPage extends VBox {
 
     public LandingPage(List<String> languages) {
         this.languages = languages;
-
-        ThemeManager.getInstance().registerComponent(this);
         this.getStyleClass().addAll("root", "landing-root");
 
         this.setAlignment(Pos.CENTER);
