@@ -1,36 +1,13 @@
 package xyz.ryansbeanfactory.collectiondecartes.model;
 
-public class Phrase {
-    private long id;
-    private String lemma;
-    private String definition;
+public record Phrase(long id, String lemma, String definition) {
 
+    /**
+     * Convenience constructor for phrases that haven't been persisted yet.
+     * id = 0 signals "not yet inserted"; the repository hands back a new
+     * Phrase with the real id once it's saved.
+     */
     public Phrase(String lemma, String definition) {
-        this.lemma = lemma;
-        this.definition = definition;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getLemma() {
-        return lemma;
-    }
-
-    public void setLemma(String lemma) {
-        this.lemma = lemma;
-    }
-
-    public String getDefinition() {
-        return definition;
-    }
-
-    public void setDefinition(String definition) {
-        this.definition = definition;
+        this(0L, lemma, definition);
     }
 }
