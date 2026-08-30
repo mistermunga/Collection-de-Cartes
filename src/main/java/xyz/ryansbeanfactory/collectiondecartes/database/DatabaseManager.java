@@ -72,67 +72,92 @@ public class DatabaseManager {
     }
 
     private void initializeSchema(Connection connection) throws SQLException {
-        String createWords = """
-                CREATE TABLE IF NOT EXISTS words (
-                    id               INTEGER PRIMARY KEY AUTOINCREMENT,
-                    lemma            TEXT NOT NULL UNIQUE,
-                    definition       TEXT NOT NULL,
-                    part_of_speech   TEXT NOT NULL,
-                    gender           TEXT,
-                    created_at       TEXT NOT NULL DEFAULT (datetime('now')),
+        String pragmaFk = "PRAGMA foreign_keys = ON;";
 
-                    repetitions      INTEGER NOT NULL DEFAULT 0,
-                    ease_factor      REAL    NOT NULL DEFAULT 2.5,
-                    interval_days    REAL    NOT NULL DEFAULT 0,
-                    due_at           TEXT    NOT NULL DEFAULT (datetime('now')),
-                    lapses           INTEGER NOT NULL DEFAULT 0,
-                    state            TEXT    NOT NULL DEFAULT 'new'
-                        CHECK (state IN ('new','learning','review','relearning')),
-                    last_reviewed_at TEXT
-                );
-                """;
+        String createWords = """
+            CREATE TABLE IF NOT EXISTS words (
+                id              INTEGER PRIMARY KEY AUTOINCREMENT,
+                lemma           TEXT NOT NULL UNIQUE,
+                definition      TEXT NOT NULL,
+                part_of_speech  TEXT NOT NULL,
+                gender          TEXT,
+                created_at      TEXT NOT NULL DEFAULT (datetime('now'))
+            );
+            """;
 
         String createPhrases = """
-                CREATE TABLE IF NOT EXISTS phrases (
-                    id               INTEGER PRIMARY KEY AUTOINCREMENT,
-                    lemma            TEXT NOT NULL UNIQUE,
-                    definition       TEXT NOT NULL,
-                    created_at       TEXT NOT NULL DEFAULT (datetime('now')),
+            CREATE TABLE IF NOT EXISTS phrases (
+                id              INTEGER PRIMARY KEY AUTOINCREMENT,
+                lemma           TEXT NOT NULL UNIQUE,
+                definition      TEXT NOT NULL,
+                created_at      TEXT NOT NULL DEFAULT (datetime('now'))
+            );
+            """;
 
-                    repetitions      INTEGER NOT NULL DEFAULT 0,
-                    ease_factor      REAL    NOT NULL DEFAULT 2.5,
-                    interval_days    REAL    NOT NULL DEFAULT 0,
-                    due_at           TEXT    NOT NULL DEFAULT (datetime('now')),
-                    lapses           INTEGER NOT NULL DEFAULT 0,
-                    state            TEXT    NOT NULL DEFAULT 'new'
-                        CHECK (state IN ('new','learning','review','relearning')),
-                    last_reviewed_at TEXT
-                );
-                """;
+        String createCardSrs = """
+            CREATE TABLE IF NOT EXISTS card_srs (
+                id               INTEGER PRIMARY KEY AUTOINCREMENT,
+                word_id          INTEGER REFERENCES words(id)   ON DELETE CASCADE,
+                phrase_id        INTEGER REFERENCES phrases(id) ON DELETE CASCADE,
 
-        String createWordsDueIndex = "CREATE INDEX IF NOT EXISTS idx_words_due ON words(due_at);";
-        String createPhrasesDueIndex = "CREATE INDEX IF NOT EXISTS idx_phrases_due ON phrases(due_at);";
+                repetitions      INTEGER NOT NULL DEFAULT 0,
+                ease_factor      REAL    NOT NULL DEFAULT 2.5,
+                interval_days    REAL    NOT NULL DEFAULT 0,
+                due_at           TEXT    NOT NULL DEFAULT (datetime('now')),
+                lapses           INTEGER NOT NULL DEFAULT 0,
+                state            TEXT    NOT NULL DEFAULT 'new'
+                    CHECK (state IN ('new','learning','review','relearning')),
+                last_reviewed_at TEXT,
+
+                CHECK (
+                    (word_id IS NOT NULL AND phrase_id IS NULL) OR
+                    (word_id IS NULL AND phrase_id IS NOT NULL)
+                ),
+                UNIQUE(word_id),
+                UNIQUE(phrase_id)
+            );
+            """;
+
+        String createCardSrsDueIndex = "CREATE INDEX IF NOT EXISTS idx_card_srs_due ON card_srs(due_at);";
 
         String createReviewLog = """
-                CREATE TABLE IF NOT EXISTS review_log (
-                    id            INTEGER PRIMARY KEY AUTOINCREMENT,
-                    card_id       INTEGER NOT NULL,
-                    card_type     TEXT NOT NULL CHECK (card_type IN ('word','phrase')),
-                    reviewed_at   TEXT NOT NULL DEFAULT (datetime('now')),
-                    grade         INTEGER NOT NULL,
-                    prev_interval REAL,
-                    new_interval  REAL,
-                    prev_ef       REAL,
-                    new_ef        REAL
-                );
-                """;
+            CREATE TABLE IF NOT EXISTS review_log (
+                id            INTEGER PRIMARY KEY AUTOINCREMENT,
+                card_srs_id   INTEGER NOT NULL REFERENCES card_srs(id) ON DELETE CASCADE,
+                reviewed_at   TEXT NOT NULL DEFAULT (datetime('now')),
+                grade         INTEGER NOT NULL,
+                prev_interval REAL,
+                new_interval  REAL,
+                prev_ef       REAL,
+                new_ef        REAL
+            );
+            """;
+
+        String createWordsTrigger = """
+            CREATE TRIGGER IF NOT EXISTS trg_words_insert_srs
+            AFTER INSERT ON words
+            BEGIN
+                INSERT INTO card_srs (word_id) VALUES (NEW.id);
+            END;
+            """;
+
+        String createPhrasesTrigger = """
+            CREATE TRIGGER IF NOT EXISTS trg_phrases_insert_srs
+            AFTER INSERT ON phrases
+            BEGIN
+                INSERT INTO card_srs (phrase_id) VALUES (NEW.id);
+            END;
+            """;
 
         try (Statement statement = connection.createStatement()) {
+            statement.execute(pragmaFk);
             statement.execute(createWords);
             statement.execute(createPhrases);
-            statement.execute(createWordsDueIndex);
-            statement.execute(createPhrasesDueIndex);
+            statement.execute(createCardSrs);
+            statement.execute(createCardSrsDueIndex);
             statement.execute(createReviewLog);
+            statement.execute(createWordsTrigger);
+            statement.execute(createPhrasesTrigger);
         }
     }
 
