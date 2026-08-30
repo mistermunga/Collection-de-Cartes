@@ -16,6 +16,7 @@ public class NavBar extends VBox {
             case ENGLISH -> "New Card";
             case FRENCH -> "Nouvelle carte";
             case SPANISH -> "Nueva carta";
+            case GERMAN -> "Neue Karte";
         };
 
         ExtensibleButton insertButton = new ExtensibleButton(
