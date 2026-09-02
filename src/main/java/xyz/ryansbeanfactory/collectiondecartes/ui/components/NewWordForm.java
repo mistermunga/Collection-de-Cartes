@@ -151,6 +151,16 @@ public class NewWordForm extends VBox {
             valid = false;
         }
 
+        try {
+            if (wordRepository.existsByLemma(lemmaField.getText())) {
+                valid = false;
+                showError("Lemma already exists.");
+            }
+        } catch (SQLException e) {
+            showError("Unable to validate word.");
+            valid = false;
+        }
+
         return valid;
     }
 
