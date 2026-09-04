@@ -37,6 +37,14 @@ public class NavBar extends VBox {
                 )
         );
 
-        getChildren().addAll(insertButton, flashcardButton);
+        ExtensibleButton dictionaryButton = new ExtensibleButton(
+                "Dictionary",
+                Map.of(
+                        "View Cards",
+                        () -> Platform.runLater(() -> parent.setPage(NavOption.DICTIONARY))
+                )
+        );
+
+        getChildren().addAll(insertButton, flashcardButton, dictionaryButton);
     }
 }
