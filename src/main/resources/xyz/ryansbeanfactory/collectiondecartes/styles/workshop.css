@@ -1,16 +1,11 @@
 /* ============================================================
-   THEME
-   Deep-blue base, restrained saturated accents, Manrope.
-   JavaFX 21+.
+   THEME — colors and fonts only.
+   Shape (corner radius, borders, backgrounds) is set in Java
+   on LargeButton / LandingPage instead of here.
    ============================================================ */
 
 .root {
     -bg-void:      #070b16;
-    -bg-panel:     #0d1526;
-    -bg-panel-alt: #121c33;
-    -line-dim:     #1e2a44;
-    -line-bright:  #2c3f66;
-
     -text-primary: #e4ebf7;
     -text-dim:     #6d7fa3;
 
@@ -20,83 +15,13 @@
     -blue:   #3f7fd9;
     -cyan:   #3fb8d9;
 
-    -radius-sm: 6;
-    -radius-md: 10;
-
     -fx-background-color: -bg-void;
     -fx-font-family: "Manrope";
     -fx-text-fill: -text-primary;
 }
 
-/* Manrope weight helpers.
-   Regular/Bold resolve through -fx-font-weight on family "Manrope".
-   Medium/SemiBold need their own family name — confirm the exact
-   string via Font.loadFont(...).getFamily() if these don't apply. */
 .font-medium   { -fx-font-family: "Manrope Medium"; }
 .font-semibold { -fx-font-family: "Manrope SemiBold"; }
-
-/* ------------------------------------------------------------
-   Landing page
-   ------------------------------------------------------------ */
-
-.landing-root {
-    -fx-background-color: -bg-void;
-}
-
-.landing-root .container.island {
-    -fx-background-color: -bg-panel;
-    -fx-background-radius: -radius-md;
-    -fx-border-color: -line-dim;
-    -fx-border-width: 1;
-    -fx-border-radius: -radius-md;
-}
-
-/* ------------------------------------------------------------
-   LargeButton  (style class: .element)
-   ------------------------------------------------------------ */
-
-.element {
-    -fx-background-color: -bg-panel-alt;
-    -fx-background-radius: -radius-sm;
-    -fx-border-color: -line-dim;
-    -fx-border-width: 1;
-    -fx-border-radius: -radius-sm;
-    -fx-text-fill: -text-primary;
-    -fx-font-family: "Manrope SemiBold";
-    -fx-font-size: 15px;
-    -fx-padding: 14 28 14 28;
-    -fx-cursor: hand;
-}
-
-.element:hover {
-    -fx-background-color: derive(-bg-panel-alt, 8%);
-    -fx-border-color: -line-bright;
-}
-
-.element:armed {
-    -fx-background-color: derive(-bg-panel-alt, -6%);
-    -fx-border-color: -line-bright;
-}
-
-.element:focused {
-    -fx-border-color: -blue;
-}
-
-/* Accent variants — one per instance where a language/category
-   needs to read distinctly. Tint is a thin signal, not a glow. */
-
-.element.accent-red    { -fx-border-color: derive(-red, 20%); }
-.element.accent-red:hover    { -fx-border-color: -red; }
-
-.element.accent-yellow { -fx-border-color: derive(-yellow, 20%); }
-.element.accent-yellow:hover { -fx-border-color: -yellow; }
-
-.element.accent-green  { -fx-border-color: derive(-green, 20%); }
-.element.accent-green:hover  { -fx-border-color: -green; }
-
-/* ------------------------------------------------------------
-   Generic text roles
-   ------------------------------------------------------------ */
 
 .title-text {
     -fx-text-fill: -text-primary;
