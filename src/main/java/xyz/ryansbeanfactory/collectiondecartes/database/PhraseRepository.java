@@ -105,6 +105,29 @@ public class PhraseRepository {
         }
     }
 
+    /**
+     * Random phrases for use as multiple-choice distractors. excludeId is a
+     * plain id, not wrapped in Optional — pass a value that can never
+     * match a real row (e.g. -1) when no exclusion is needed, such as
+     * when topping up distractors from the other card type.
+     */
+    public List<Phrase> findRandomExcluding(long excludeId, int limit) throws SQLException {
+        String sql = "SELECT * FROM phrases WHERE id != ? ORDER BY RANDOM() LIMIT ?";
+        List<Phrase> phrases = new ArrayList<>();
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setLong(1, excludeId);
+            statement.setInt(2, limit);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    phrases.add(mapRow(resultSet));
+                }
+            }
+        }
+        return phrases;
+    }
+
     public long count() throws SQLException {
         String sql = "SELECT COUNT(*) FROM phrases";
 
