@@ -86,3 +86,157 @@
     -fx-background-color: -line-dim;
     -fx-padding: 0 1 0 0;
 }
+
+.field-label {
+    -fx-text-fill: -text-dim;
+    -fx-font-family: "Manrope SemiBold";
+    -fx-font-size: 12px;
+}
+
+.text-input {
+    -fx-background-color: -bg-panel-alt;
+    -fx-text-fill: -text-primary;
+    -fx-prompt-text-fill: -text-dim;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: -line-dim;
+    -fx-border-width: 1;
+    -fx-padding: 10 14 10 14;
+    -fx-font-family: "Manrope";
+    -fx-font-size: 14px;
+}
+
+.text-input:focused {
+    -fx-border-color: -blue;
+}
+
+.text-area.text-input {
+    -fx-padding: 0;
+}
+
+.text-area.text-input .content {
+    -fx-background-color: -bg-panel-alt;
+    -fx-background-radius: 8;
+    -fx-padding: 10 14 10 14;
+}
+
+.text-area.text-input .scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.combo-box.form-control {
+    -fx-background-color: -bg-panel-alt;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: -line-dim;
+    -fx-border-width: 1;
+    -fx-padding: 4 8 4 8;
+}
+
+.combo-box.form-control:focused {
+    -fx-border-color: -blue;
+}
+
+.combo-box.form-control .list-cell {
+    -fx-text-fill: -text-primary;
+    -fx-background-color: transparent;
+    -fx-font-family: "Manrope";
+    -fx-font-size: 14px;
+}
+
+.combo-box.form-control .arrow {
+    -fx-background-color: -text-dim;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: -bg-panel-alt;
+    -fx-border-color: -line-dim;
+    -fx-border-width: 1;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+}
+
+.combo-box-popup .list-cell {
+    -fx-text-fill: -text-primary;
+    -fx-background-color: transparent;
+    -fx-font-family: "Manrope";
+    -fx-font-size: 14px;
+    -fx-padding: 8 14 8 14;
+}
+
+.combo-box-popup .list-cell:hover {
+    -fx-background-color: derive(-bg-panel-alt, 15%);
+}
+
+.combo-box-popup .list-cell:filled:selected {
+    -fx-background-color: -blue;
+    -fx-text-fill: -bg-void;
+}
+
+.primary-button {
+    -fx-background-color: -blue;
+    -fx-text-fill: -bg-void;
+    -fx-font-family: "Manrope SemiBold";
+    -fx-font-size: 14px;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-padding: 12 28 12 28;
+    -fx-cursor: hand;
+}
+
+.primary-button:hover {
+    -fx-background-color: derive(-blue, 12%);
+}
+
+.primary-button:armed {
+    -fx-background-color: derive(-blue, -12%);
+}
+
+.stat-value {
+    -fx-text-fill: -text-primary;
+    -fx-font-family: "Manrope";
+    -fx-font-weight: bold;
+    -fx-font-size: 36px;
+}
+
+.stat-label {
+    -fx-text-fill: -text-dim;
+    -fx-font-family: "Manrope SemiBold";
+    -fx-font-size: 12px;
+}
+
+.themed-dialog {
+    -fx-background-color: -bg-panel;
+}
+
+.themed-dialog .header-panel {
+    -fx-background-color: -bg-panel;
+}
+
+.themed-dialog .header-panel .label {
+    -fx-text-fill: -text-primary;
+    -fx-font-family: "Manrope SemiBold";
+    -fx-font-size: 16px;
+}
+
+.themed-dialog .content.label {
+    -fx-text-fill: -text-primary;
+    -fx-font-family: "Manrope";
+    -fx-font-size: 14px;
+}
+
+.themed-dialog .button-bar .button {
+    -fx-background-color: -bg-panel-alt;
+    -fx-text-fill: -text-primary;
+    -fx-font-family: "Manrope SemiBold";
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-border-color: -line-dim;
+    -fx-border-width: 1;
+    -fx-padding: 8 20 8 20;
+    -fx-cursor: hand;
+}
+
+.themed-dialog .button-bar .button:hover {
+    -fx-background-color: derive(-bg-panel-alt, 12%);
+}
