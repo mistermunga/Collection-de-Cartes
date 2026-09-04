@@ -114,6 +114,29 @@ public class WordRepository {
         return words;
     }
 
+    /**
+     * Random words for use as multiple-choice distractors. excludeId is a
+     * plain id, not wrapped in Optional — pass a value that can never
+     * match a real row (e.g. -1) when no exclusion is needed, such as
+     * when topping up distractors from the other card type.
+     */
+    public List<Word> findRandomExcluding(long excludeId, int limit) throws SQLException {
+        String sql = "SELECT * FROM words WHERE id != ? ORDER BY RANDOM() LIMIT ?";
+        List<Word> words = new ArrayList<>();
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setLong(1, excludeId);
+            statement.setInt(2, limit);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    words.add(mapRow(resultSet));
+                }
+            }
+        }
+        return words;
+    }
+
     public boolean existsByLemma(String lemma) throws SQLException {
         String sql = "SELECT 1 FROM words WHERE lemma = ? LIMIT 1";
 
