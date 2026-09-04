@@ -57,6 +57,11 @@ public class ThemeManager {
                             .toExternalForm()
             );
         }
+        String workshopPath = STYLE_FOLDER + "/workshop.css";
+        URL resource = getClass().getResource(workshopPath);
+        urls.add(
+                Objects.requireNonNull(resource, "Missing workshop").toExternalForm()
+        );
         return urls;
     }
 
