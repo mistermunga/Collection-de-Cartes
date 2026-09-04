@@ -43,11 +43,12 @@ public class CarteApplication extends Application {
 
         for (String fontName : fonts) {
             String path = "/xyz/ryansbeanfactory/collectiondecartes/fonts/" + fontName;
-            Font _ = Font.loadFont(
+            Font font = Font.loadFont(
                     Objects.requireNonNull(
                             getClass().getResourceAsStream(path)
-                    ), 14
+                    ), 12
             );
+            System.out.println(fontName + " -> family: " + font.getFamily());
         }
     }
 
