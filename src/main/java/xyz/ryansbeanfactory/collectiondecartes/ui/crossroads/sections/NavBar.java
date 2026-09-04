@@ -12,22 +12,7 @@ public class NavBar extends VBox {
 
     public NavBar(MainView parent) {
 
-        String insertText = switch (AppSession.getInstance().getDeckLanguage()) {
-            case ENGLISH -> "New Card";
-            case FRENCH -> "Nouvelle carte";
-            case SPANISH -> "Nueva carta";
-            case GERMAN -> "Neue Karte";
-        };
-
-        ExtensibleButton insertButton = new ExtensibleButton(
-                insertText,
-                Map.of(
-                        "New Word",
-                        () -> Platform.runLater(() -> parent.setPage(NavOption.NEW_WORD)),
-                        "New Phrase",
-                        () -> Platform.runLater(() -> parent.setPage(NavOption.NEW_PHRASE))
-                )
-        );
+        ExtensibleButton insertButton = getInsertButton(parent);
 
         ExtensibleButton flashcardButton = new ExtensibleButton(
                 "Flashcards",
@@ -46,5 +31,24 @@ public class NavBar extends VBox {
         );
 
         getChildren().addAll(insertButton, flashcardButton, dictionaryButton);
+    }
+
+    private static ExtensibleButton getInsertButton(MainView parent) {
+        String insertText = switch (AppSession.getInstance().getDeckLanguage()) {
+            case ENGLISH -> "New Card";
+            case FRENCH -> "Nouvelle carte";
+            case SPANISH -> "Nueva carta";
+            case GERMAN -> "Neue Karte";
+        };
+
+        return new ExtensibleButton(
+                insertText,
+                Map.of(
+                        "New Word",
+                        () -> Platform.runLater(() -> parent.setPage(NavOption.NEW_WORD)),
+                        "New Phrase",
+                        () -> Platform.runLater(() -> parent.setPage(NavOption.NEW_PHRASE))
+                )
+        );
     }
 }
