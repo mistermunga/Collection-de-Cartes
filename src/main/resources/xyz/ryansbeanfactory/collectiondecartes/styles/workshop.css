@@ -1,19 +1,29 @@
 /* ============================================================
-   THEME — colors and fonts only.
-   Shape (corner radius, borders, backgrounds) is set in Java
-   on LargeButton / LandingPage instead of here.
+   THEME — colors and fonts live here.
+   Shape (corner radius, borders, backgrounds tied to state)
+   lives in Java, since custom -fx-* variables consumed by
+   Size-typed properties (-fx-background-radius etc.) get typed
+   as raw Double and crash on cast — see LargeButton for detail.
+   Plain color/text-fill through a variable is unaffected by
+   that bug, so it stays here.
    ============================================================ */
 
 .root {
     -bg-void:      #070b16;
+    -bg-panel:     #0d1526;
+    -bg-panel-alt: #121c33;
+    -line-dim:     #1e2a44;
+    -line-bright:  #2c3f66;
+
     -text-primary: #e4ebf7;
     -text-dim:     #6d7fa3;
 
-    -red:    #e14b4b;
-    -yellow: #d9a428;
-    -green:  #2fa876;
-    -blue:   #3f7fd9;
-    -cyan:   #3fb8d9;
+    -red:        #e14b4b;
+    -red-bright: #ff5f5f;
+    -yellow:     #d9a428;
+    -green:      #2fa876;
+    -blue:       #3f7fd9;
+    -cyan:       #3fb8d9;
 
     -fx-background-color: -bg-void;
     -fx-font-family: "Manrope";
@@ -34,4 +44,45 @@
     -fx-text-fill: -text-dim;
     -fx-font-family: "Manrope Medium";
     -fx-font-size: 13px;
+}
+
+.logo {
+    -fx-text-fill: -text-primary;
+    -fx-font-family: "Manrope SemiBold";
+    -fx-font-size: 18px;
+}
+
+.settings-icon {
+    -fx-text-fill: -text-dim;
+    -fx-font-size: 16px;
+    -fx-cursor: hand;
+}
+
+.settings-icon:hover {
+    -fx-text-fill: -text-primary;
+}
+
+.nav-label {
+    -fx-text-fill: -text-primary;
+    -fx-font-family: "Manrope SemiBold";
+    -fx-font-size: 14px;
+}
+
+.nav-sub-label {
+    -fx-text-fill: -text-dim;
+    -fx-font-family: "Manrope Medium";
+    -fx-font-size: 13px;
+}
+
+.nav-sub-label:hover {
+    -fx-text-fill: -text-primary;
+}
+
+.main-view {
+    -fx-background-color: transparent;
+}
+
+.main-view > .split-pane-divider {
+    -fx-background-color: -line-dim;
+    -fx-padding: 0 1 0 0;
 }
