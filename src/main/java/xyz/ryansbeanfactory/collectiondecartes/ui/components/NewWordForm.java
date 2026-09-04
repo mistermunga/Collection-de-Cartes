@@ -1,6 +1,12 @@
 package xyz.ryansbeanfactory.collectiondecartes.ui.components;
 
-import javafx.scene.control.*;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import xyz.ryansbeanfactory.collectiondecartes.CarteApplication;
@@ -9,6 +15,7 @@ import xyz.ryansbeanfactory.collectiondecartes.model.Word;
 import xyz.ryansbeanfactory.collectiondecartes.model.refs.Gender;
 import xyz.ryansbeanfactory.collectiondecartes.model.refs.PartOfSpeech;
 import xyz.ryansbeanfactory.collectiondecartes.session.AppSession;
+import xyz.ryansbeanfactory.collectiondecartes.ui.util.Dialogs;
 
 import java.sql.SQLException;
 
@@ -19,9 +26,8 @@ public class NewWordForm extends VBox {
     private final ComboBox<Gender> genderComboBox = new ComboBox<>();
     private final ComboBox<PartOfSpeech> partOfSpeechComboBox = new ComboBox<>();
 
-    private final HBox genderRow = new HBox();
+    private final VBox genderRow = fieldRow("Gender", genderComboBox);
 
-    // True only if the deck language actually uses grammatical gender at all.
     private final boolean languageSupportsGenders = !AppSession.getInstance()
             .getDeckLanguage()
             .getGenders()
@@ -33,62 +39,73 @@ public class NewWordForm extends VBox {
     );
 
     public NewWordForm() {
+        this.setMaxWidth(480);
+        this.setSpacing(20);
+        this.setPadding(new Insets(40));
+        this.setAlignment(Pos.TOP_LEFT);
+
         initialiseRows();
     }
 
     private void initialiseRows() {
-        HBox lemmaRow = new HBox();
-        Label lemma = new Label("Lemma:");
-        lemmaRow.getChildren().addAll(lemma, lemmaField);
-        this.getChildren().add(lemmaRow);
+        definitionField.setWrapText(true);
+        definitionField.setPrefRowCount(3);
 
-        HBox definitionRow = new HBox();
-        Label definition = new Label("Definition:");
-        definitionRow.getChildren().addAll(definition, definitionField);
-        this.getChildren().add(definitionRow);
-
-        HBox partOfSpeechRow = new HBox();
-        Label partOfSpeech = new Label("Part Of Speech:");
-
+        partOfSpeechComboBox.getStyleClass().add("form-control");
         partOfSpeechComboBox.getItems().addAll(PartOfSpeech.values());
-        partOfSpeechRow.getChildren().addAll(partOfSpeech, partOfSpeechComboBox);
 
-        this.getChildren().add(partOfSpeechRow);
-
-        // Gender only ever matters for nouns, and only for languages that have genders at all.
-        Label gender = new Label("Gender:");
+        genderComboBox.getStyleClass().add("form-control");
         genderComboBox.getItems().addAll(Gender.values());
-        genderRow.getChildren().addAll(gender, genderComboBox);
 
-        // Only show the row once we know the selected part of speech is NOUN.
-        setGenderRowVisible(false);
+        genderRow.setVisible(false);
+        genderRow.setManaged(false);
 
         partOfSpeechComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
             boolean shouldShowGender = languageSupportsGenders && newVal == PartOfSpeech.NOUN;
-            setGenderRowVisible(shouldShowGender);
+            genderRow.setVisible(shouldShowGender);
+            genderRow.setManaged(shouldShowGender);
 
             if (!shouldShowGender) {
                 genderComboBox.setValue(null);
             }
         });
 
-        this.getChildren().add(genderRow);
+        this.getChildren().addAll(
+                fieldRow("Lemma", lemmaField),
+                fieldRow("Definition", definitionField),
+                fieldRow("Part Of Speech", partOfSpeechComboBox),
+                genderRow
+        );
 
         Button submit = new Button("Submit");
+        submit.getStyleClass().add("primary-button");
         submit.setOnAction(e -> {
             if (validateForm()) {
                 submitWord();
-                showSuccess();
+                Dialogs.showSuccess("The word has been successfully submitted.");
                 clearFields();
             }
         });
 
-        this.getChildren().add(submit);
+        HBox submitRow = new HBox(submit);
+        submitRow.setAlignment(Pos.CENTER_RIGHT);
+        this.getChildren().add(submitRow);
     }
 
-    private void setGenderRowVisible(boolean visible) {
-        genderRow.setVisible(visible);
-        genderRow.setManaged(visible);
+    private static VBox fieldRow(String labelText, javafx.scene.Node control) {
+        Label label = new Label(labelText.toUpperCase());
+        label.getStyleClass().add("field-label");
+
+        if (control instanceof TextField || control instanceof TextArea) {
+            control.getStyleClass().add("text-input");
+        }
+        if (control instanceof javafx.scene.control.Control jfxControl) {
+            jfxControl.setMaxWidth(Double.MAX_VALUE);
+        }
+
+        VBox row = new VBox(label, control);
+        row.setSpacing(8);
+        return row;
     }
 
     private boolean isNounSelected() {
@@ -96,8 +113,6 @@ public class NewWordForm extends VBox {
     }
 
     private void submitWord() {
-        // Gender only applies to nouns; force it to NONE for everything else,
-        // regardless of what's left over in the combo box.
         Gender gender = (languageSupportsGenders && isNounSelected())
                 ? genderComboBox.getValue()
                 : Gender.NONE;
@@ -112,41 +127,30 @@ public class NewWordForm extends VBox {
         try {
             wordRepository.insert(word);
         } catch (SQLException e) {
-            showError("Unable to insert word.");
+            Dialogs.showError("Unable to insert word.");
         }
     }
 
     private boolean validateForm() {
         boolean valid = true;
 
-        // Validate lemma
         if (lemmaField.getText() == null || lemmaField.getText().trim().isEmpty()) {
-            showError("Lemma cannot be empty.");
+            Dialogs.showError("Lemma cannot be empty.");
             lemmaField.requestFocus();
             valid = false;
-        }
-
-        // Validate definition
-        else if (definitionField.getText() == null
+        } else if (definitionField.getText() == null
                 || definitionField.getText().trim().isEmpty()) {
-            showError("Definition cannot be empty.");
+            Dialogs.showError("Definition cannot be empty.");
             definitionField.requestFocus();
             valid = false;
-        }
-
-        // Validate part of speech
-        else if (partOfSpeechComboBox.getValue() == null) {
-            showError("Please select a part of speech.");
+        } else if (partOfSpeechComboBox.getValue() == null) {
+            Dialogs.showError("Please select a part of speech.");
             partOfSpeechComboBox.requestFocus();
             valid = false;
-        }
-
-        // Validate gender only if the current language uses genders AND the word is a noun
-        else if (languageSupportsGenders
+        } else if (languageSupportsGenders
                 && isNounSelected()
                 && genderComboBox.getValue() == null) {
-
-            showError("Please select a gender.");
+            Dialogs.showError("Please select a gender.");
             genderComboBox.requestFocus();
             valid = false;
         }
@@ -154,30 +158,14 @@ public class NewWordForm extends VBox {
         try {
             if (wordRepository.existsByLemma(lemmaField.getText())) {
                 valid = false;
-                showError("Lemma already exists.");
+                Dialogs.showError("Lemma already exists.");
             }
         } catch (SQLException e) {
-            showError("Unable to validate word.");
+            Dialogs.showError("Unable to validate word.");
             valid = false;
         }
 
         return valid;
-    }
-
-    private void showError(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    private void showSuccess() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Success");
-        alert.setHeaderText(null);
-        alert.setContentText("The word has been successfully submitted.");
-        alert.showAndWait();
     }
 
     private void clearFields() {

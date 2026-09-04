@@ -1,12 +1,20 @@
 package xyz.ryansbeanfactory.collectiondecartes.ui.components;
 
-import javafx.scene.control.*;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.control.Control;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import xyz.ryansbeanfactory.collectiondecartes.CarteApplication;
 import xyz.ryansbeanfactory.collectiondecartes.database.PhraseRepository;
 import xyz.ryansbeanfactory.collectiondecartes.model.Phrase;
 import xyz.ryansbeanfactory.collectiondecartes.session.AppSession;
+import xyz.ryansbeanfactory.collectiondecartes.ui.util.Dialogs;
 
 import java.sql.SQLException;
 
@@ -21,46 +29,64 @@ public class NewPhraseForm extends VBox {
     );
 
     public NewPhraseForm() {
+        this.setMaxWidth(480);
+        this.setSpacing(20);
+        this.setPadding(new Insets(40));
+        this.setAlignment(Pos.TOP_LEFT);
+
         initialise();
     }
 
     private void initialise() {
-        HBox lemmaRow = new HBox();
-        Label lemma = new Label("Lemma:");
-        lemmaRow.getChildren().addAll(lemma, lemmaField);
-        this.getChildren().add(lemmaRow);
+        definitionField.setWrapText(true);
+        definitionField.setPrefRowCount(3);
 
-        HBox definitionRow = new HBox();
-        Label definition = new Label("Definition:");
-        definitionRow.getChildren().addAll(definition, definitionField);
-        this.getChildren().add(definitionRow);
+        this.getChildren().addAll(
+                fieldRow("Lemma", lemmaField),
+                fieldRow("Definition", definitionField)
+        );
 
         Button submit = new Button("Submit");
+        submit.getStyleClass().add("primary-button");
         submit.setOnAction(e -> {
             if (validateForm()) {
                 submitPhrase();
-                showSuccess();
+                Dialogs.showSuccess("The phrase has been successfully submitted.");
                 clearFields();
             }
         });
 
-        this.getChildren().add(submit);
+        HBox submitRow = new HBox(submit);
+        submitRow.setAlignment(Pos.CENTER_RIGHT);
+        this.getChildren().add(submitRow);
+    }
+
+    private static VBox fieldRow(String labelText, Node control) {
+        Label label = new Label(labelText.toUpperCase());
+        label.getStyleClass().add("field-label");
+
+        if (control instanceof TextField || control instanceof TextArea) {
+            control.getStyleClass().add("text-input");
+        }
+        if (control instanceof Control jfxControl) {
+            jfxControl.setMaxWidth(Double.MAX_VALUE);
+        }
+
+        VBox row = new VBox(label, control);
+        row.setSpacing(8);
+        return row;
     }
 
     private boolean validateForm() {
         boolean valid = true;
 
-        // Validate lemma
         if (lemmaField.getText() == null || lemmaField.getText().trim().isEmpty()) {
-            showError("Lemma cannot be empty.");
+            Dialogs.showError("Lemma cannot be empty.");
             lemmaField.requestFocus();
             valid = false;
-        }
-
-        // Validate definition
-        else if (definitionField.getText() == null
+        } else if (definitionField.getText() == null
                 || definitionField.getText().trim().isEmpty()) {
-            showError("Definition cannot be empty.");
+            Dialogs.showError("Definition cannot be empty.");
             definitionField.requestFocus();
             valid = false;
         }
@@ -74,24 +100,8 @@ public class NewPhraseForm extends VBox {
         try {
             phraseRepository.insert(phrase);
         } catch (SQLException e) {
-            showError("Unable to insert phrase.");
+            Dialogs.showError("Unable to insert phrase.");
         }
-    }
-
-    private void showError(String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    private void showSuccess() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Success");
-        alert.setHeaderText(null);
-        alert.setContentText("The word has been successfully submitted.");
-        alert.showAndWait();
     }
 
     private void clearFields() {
