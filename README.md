@@ -13,7 +13,6 @@ everything in a flippable dictionary view.
   (`LatencyGrader`) so accidental clicks aren't scored as real answers.
 - **Dictionary view** — every word/phrase in the deck as a grid of flippable
   cards.
-- **Streak tracking** on the title bar.
 - **Themeable UI** — `ThemeManager` swaps in a full stylesheet set
   (`base.css`, `layout.css`, `components.css`, `flashcards.css`) per
   `Theme`, layered under a `workshop.css` staging sheet. *[WIP!]*
